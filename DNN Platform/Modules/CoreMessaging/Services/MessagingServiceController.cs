@@ -38,6 +38,7 @@ using DotNetNuke.Services.Social.Messaging;
 using DotNetNuke.Services.Social.Messaging.Internal;
 using DotNetNuke.Services.Social.Notifications;
 using DotNetNuke.Web.Api;
+using System.Linq;
 
 namespace DotNetNuke.Modules.CoreMessaging.Services
 {
@@ -386,6 +387,48 @@ namespace DotNetNuke.Modules.CoreMessaging.Services
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
             }
         }
+
+
+        [HttpGet]
+        public HttpResponseMessage Search(string q) {
+            try {
+                var portalId = PortalController.GetEffectivePortalId(PortalSettings.PortalId);
+                var isAdmin = UserInfo.IsSuperUser || UserInfo.IsInRole("Administrators");
+                const int numResults = 10;
+
+                // GetUsersAdvancedSearch doesn't accept a comma or a single quote in the query so we have to remove them for now. See issue 20224.
+                q = q.Replace(",", "").Replace("'", "");
+                if (q.Length == 0)
+                    return Request.CreateResponse<SearchResult>(HttpStatusCode.OK, null);
+
+                var results = UserController.Instance.GetUsersBasicSearch(portalId, 0, numResults, "DisplayName", true, "DisplayName", q)
+                    .Select(user => new SearchResult {
+                        id = "user-" + user.UserID,
+                        name = user.DisplayName,
+                        iconfile = UserController.Instance.GetUserProfilePictureUrl(user.UserID, 32, 32)
+                    }).ToList();
+
+                //Roles should be visible to Administrators or User in the Role.
+                var roles = Security.Roles.RoleController.Instance.GetRolesBasicSearch(portalId, numResults, q);
+                results.AddRange(from roleInfo in roles
+                                 where
+                                     isAdmin ||
+                                     UserInfo.Social.Roles.SingleOrDefault(ur => ur.RoleID == roleInfo.RoleID && ur.IsOwner) != null
+                                 select new SearchResult {
+                                     id = "role-" + roleInfo.RoleID,
+                                     name = roleInfo.RoleName,
+                                     iconfile = Common.Internal.TestableGlobals.Instance.ResolveUrl(string.IsNullOrEmpty(roleInfo.IconFile)
+                                                 ? "~/images/no_avatar.gif"
+                                                 : PortalSettings.HomeDirectory.TrimEnd('/') + "/" + roleInfo.IconFile)
+                                 });
+
+                return Request.CreateResponse(HttpStatusCode.OK, results.OrderBy(sr => sr.name));
+            } catch (Exception exc) {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }
+
         #endregion
 
         #region DTO
@@ -399,6 +442,12 @@ namespace DotNetNuke.Modules.CoreMessaging.Services
         {
             public string Body { get; set; }
             public IList<int> FileIds { get; set; }
+        }
+
+        private class SearchResult {
+            public string id;
+            public string name;
+            public string iconfile;
         }
 
         #endregion
