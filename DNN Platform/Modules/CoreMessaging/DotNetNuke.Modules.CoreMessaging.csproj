@@ -73,6 +73,7 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
@@ -95,6 +96,13 @@
     <Compile Include="Services\MessagingServiceController.cs" />
     <Compile Include="Services\CoreMessagingRouteMapper.cs" />
     <Compile Include="Services\SubscriptionsController.cs" />
+    <Compile Include="Settings.ascx.cs">
+      <DependentUpon>Settings.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Settings.ascx.designer.cs">
+      <DependentUpon>Settings.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Subscriptions.ascx.cs">
       <DependentUpon>Subscriptions.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -114,6 +122,7 @@
     <Compile Include="ViewModels\NotificationActionViewModel.cs" />
     <Compile Include="ViewModels\NotificationsViewModel.cs" />
     <Compile Include="ViewModels\NotificationViewModel.cs" />
+    <Compile Include="ViewModels\CoreMessagingSettings.cs" />
     <Compile Include="ViewModels\SubscriptionViewModel.cs" />
     <Compile Include="ViewModels\TotalsViewModel.cs" />
   </ItemGroup>
@@ -121,8 +130,10 @@
     <None Include="CoreMessaging.dnn">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="edit.css" />
     <Content Include="Module.build" />
     <Content Include="packages.config" />
+    <Content Include="Settings.ascx" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>

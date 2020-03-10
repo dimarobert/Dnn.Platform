@@ -392,6 +392,14 @@ namespace DotNetNuke.Modules.CoreMessaging.Services
         [HttpGet]
         public HttpResponseMessage Search(string q) {
             try {
+
+                var cmSettings = new CoreMessagingSettingsRepository().GetSettings(ActiveModule);
+                var rolePermissions = Newtonsoft.Json.JsonConvert.DeserializeObject<List<RolePermissions>>(cmSettings.RolePermissions);
+                var currentUserVisibleRoles = new HashSet<int>( rolePermissions.Where(r => UserInfo.Social.Roles.SingleOrDefault(ur => ur.RoleID == r.RoleId && ur.IsOwner) != null)
+                    .SelectMany(r => r.AllowedRoles)
+                    .Distinct()
+                );
+
                 var portalId = PortalController.GetEffectivePortalId(PortalSettings.PortalId);
                 var isAdmin = UserInfo.IsSuperUser || UserInfo.IsInRole("Administrators");
                 const int numResults = 10;
@@ -402,6 +410,7 @@ namespace DotNetNuke.Modules.CoreMessaging.Services
                     return Request.CreateResponse<SearchResult>(HttpStatusCode.OK, null);
 
                 var results = UserController.Instance.GetUsersBasicSearch(portalId, 0, numResults, "DisplayName", true, "DisplayName", q)
+                    .Where(user => isAdmin || user.Social.Roles.Any(ur => currentUserVisibleRoles.Contains(ur.RoleID) && ur.IsOwner))
                     .Select(user => new SearchResult {
                         id = "user-" + user.UserID,
                         name = user.DisplayName,
