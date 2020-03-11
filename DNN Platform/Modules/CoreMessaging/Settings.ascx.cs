@@ -56,8 +56,62 @@ namespace DotNetNuke.Modules.CoreMessaging {
             base.OnLoad(e);
         }
 
+        protected void lstvwRolePermissions_ItemUpdating(object sender, System.Web.UI.WebControls.ListViewUpdateEventArgs e) {
+            var editedItem = lstvwRolePermissions.Items[e.ItemIndex];
+            var roleIdField = editedItem.FindControl("roleId") as System.Web.UI.WebControls.HiddenField;
+            var roleId = int.Parse(roleIdField.Value);
+
+            var allowedRolesField = editedItem.FindControl("cbAllowedRoles") as System.Web.UI.WebControls.CheckBoxList;
+            var roleAllowedRoles = allowedRolesField.Items
+                .Cast<System.Web.UI.WebControls.ListItem>()
+                .Where(li => li.Selected)
+                .Select(li => new RoleViewModel {
+                    RoleId = int.Parse(li.Value)
+                }).ToList();
+
+            var vm = GetViewModel();
+            vm.RolePermissions.First(rp => rp.Role.RoleId == roleId).AllowedRoles = roleAllowedRoles;
+
+            SaveSettings(vm);
+
+            lstvwRolePermissions.EditIndex = -1;
+            LoadAndBindListView();
+        }
+
+
+        protected void lstvwRolePermissions_ItemDataBound(object sender, System.Web.UI.WebControls.ListViewItemEventArgs e) {
+            if (lstvwRolePermissions.EditIndex == e.Item.DataItemIndex) {
+
+                var roleIdField = e.Item.FindControl("roleId") as System.Web.UI.WebControls.HiddenField;
+                var roleId = int.Parse(roleIdField.Value);
+
+                var allowedRoles = e.Item.FindControl("cbAllowedRoles") as System.Web.UI.WebControls.CheckBoxList;
+
+
+                allowedRoles.DataSource = GetRolesViewModel();
+                allowedRoles.DataTextField = "RoleName";
+                allowedRoles.DataValueField = "RoleId";
+                allowedRoles.DataBind();
+
+                var vm = GetViewModel();
+                foreach (var role in vm.RolePermissions.First(rp => rp.Role.RoleId == roleId).AllowedRoles) {
+                    var ar = allowedRoles.Items.FindByValue(role.RoleId.ToString());
+                    if (ar != null)
+                        ar.Selected = true;
+                }
+            }
+        }
+
         protected void lstvwRolePermissions_ItemEditing(object sender, System.Web.UI.WebControls.ListViewEditEventArgs e) {
 
+            lstvwRolePermissions.EditIndex = e.NewEditIndex;
+            LoadAndBindListView();
+
+        }
+
+        protected void lstvwRolePermissions_ItemCanceling(object sender, System.Web.UI.WebControls.ListViewCancelEventArgs e) {
+            lstvwRolePermissions.EditIndex = -1;
+            LoadAndBindListView();
         }
 
         protected void lstvwRolePermissions_ItemInserting(object sender, System.Web.UI.WebControls.ListViewInsertEventArgs e) {
@@ -109,6 +163,7 @@ namespace DotNetNuke.Modules.CoreMessaging {
         public override void LoadSettings() {
             try {
                 if (!Page.IsPostBack) {
+                    plRolePermissions.Text = "Role based visibility";
                     LoadAndBindListView();
                 }
                 //Module failed to load
@@ -196,6 +251,5 @@ namespace DotNetNuke.Modules.CoreMessaging {
         }
 
         #endregion
-
     }
 }

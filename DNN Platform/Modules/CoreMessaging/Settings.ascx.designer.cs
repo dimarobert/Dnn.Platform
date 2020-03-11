@@ -22,6 +22,15 @@ namespace DotNetNuke.Modules.CoreMessaging {
         protected global::DotNetNuke.Web.Client.ClientResourceManagement.DnnCssInclude customJS;
 
         /// <summary>
+        /// plRolePermissions control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label plRolePermissions;
+
+        /// <summary>
         /// lstvwRolePermissions control.
         /// </summary>
         /// <remarks>

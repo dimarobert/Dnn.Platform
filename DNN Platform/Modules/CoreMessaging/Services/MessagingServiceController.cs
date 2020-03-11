@@ -395,7 +395,7 @@ namespace DotNetNuke.Modules.CoreMessaging.Services
 
                 var cmSettings = new CoreMessagingSettingsRepository().GetSettings(ActiveModule);
                 var rolePermissions = Newtonsoft.Json.JsonConvert.DeserializeObject<List<RolePermissions>>(cmSettings.RolePermissions);
-                var currentUserVisibleRoles = new HashSet<int>( rolePermissions.Where(r => UserInfo.Social.Roles.SingleOrDefault(ur => ur.RoleID == r.RoleId && ur.IsOwner) != null)
+                var currentUserVisibleRoles = new HashSet<int>( rolePermissions.Where(r => UserInfo.Social.Roles.SingleOrDefault(ur => ur.RoleID == r.RoleId) != null)
                     .SelectMany(r => r.AllowedRoles)
                     .Distinct()
                 );
@@ -410,7 +410,7 @@ namespace DotNetNuke.Modules.CoreMessaging.Services
                     return Request.CreateResponse<SearchResult>(HttpStatusCode.OK, null);
 
                 var results = UserController.Instance.GetUsersBasicSearch(portalId, 0, numResults, "DisplayName", true, "DisplayName", q)
-                    .Where(user => isAdmin || user.Social.Roles.Any(ur => currentUserVisibleRoles.Contains(ur.RoleID) && ur.IsOwner))
+                    .Where(user => isAdmin || user.Social.Roles.Any(ur => currentUserVisibleRoles.Contains(ur.RoleID)))
                     .Select(user => new SearchResult {
                         id = "user-" + user.UserID,
                         name = user.DisplayName,

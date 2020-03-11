@@ -18,7 +18,7 @@ namespace DotNetNuke.Modules.CoreMessaging.ViewModels {
         public List<RoleViewModel> AllowedRoles { get; set; } = new List<RoleViewModel>();
 
         private string GetDebugString() {
-            return $"{Role} > AllowedRoles: {AllowedRoles.Count}";
+            return $"{Role.GetDebugString()} > AllowedRoles: {AllowedRoles.Count}";
         }
     }
 
@@ -28,7 +28,7 @@ namespace DotNetNuke.Modules.CoreMessaging.ViewModels {
 
         public string RoleName { get; set; } = "";
 
-        private string GetDebugString() {
+        internal string GetDebugString() {
             return $"#{RoleId} {RoleName}";
         }
     }

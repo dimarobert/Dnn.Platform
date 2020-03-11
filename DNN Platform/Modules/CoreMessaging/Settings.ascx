@@ -8,15 +8,19 @@
 
 <div class="dnnForm dnnCoreMessagingSettings dnnClear">
     <div class="dnnFormItem">
-        <%--<dnn:label id="plRolePermissions" controlname="lstvwRolePermissions" runat="server" />--%>
+        <asp:Label id="plRolePermissions" runat="server" />
+        <hr />
         <asp:ListView ID="lstvwRolePermissions" runat="server"
             InsertItemPosition="LastItem"
             OnItemInserting="lstvwRolePermissions_ItemInserting"
             OnItemEditing="lstvwRolePermissions_ItemEditing"
-            OnItemDeleting="lstvwRolePermissions_ItemDeleting">
+            OnItemDeleting="lstvwRolePermissions_ItemDeleting"
+            OnItemUpdating="lstvwRolePermissions_ItemUpdating"
+            OnItemDataBound="lstvwRolePermissions_ItemDataBound"
+            OnItemCanceling="lstvwRolePermissions_ItemCanceling">
 
             <LayoutTemplate>
-                <ul runat="server" id="lstRolePerms">
+                <ul runat="server" id="lstRolePerms" class="role-list">
                     <li runat="server" id="itemPlaceholder" />
                 </ul>
             </LayoutTemplate>
@@ -25,60 +29,31 @@
                 <li runat="server">
                     <asp:HiddenField ID="roleId" runat="server" Value='<%# Eval("Role.RoleId" ) %>' />
                     <span><%# Eval("Role.RoleName" ) %></span>
-                    <a href="#"><%# Eval("AllowedRoles.Count") %> Allowed roles</a>
+                    <asp:LinkButton ID="btnEditRole" runat="server" CommandName="Edit" Text='<%# Eval("AllowedRoles.Count") + " Allowed roles" %>' />
                     <asp:LinkButton ID="btnDeleteRole" runat="server" CommandName="Delete" Text="Delete" CssClass="btn-delete-role dnnSecondaryAction" />
                 </li>
+                <hr />
             </ItemTemplate>
 
-            <InsertItemTemplate>
-                <asp:DropDownList ID="ddNewRole" AppendDataBoundItems="false" runat="server"></asp:DropDownList>
-                <asp:LinkButton ID="btnAddNewRole" runat="server" CommandName="Insert" Text="Add Role" CssClass="dnnSecondaryAction" />
-                <div id="addNewRoleErrors" runat="server" visible="false"></div>
-            </InsertItemTemplate>
-
             <EditItemTemplate>
-                <div><%# Eval("Role.RoleName" ) %></div>
+                <asp:HiddenField ID="roleId" runat="server" Value='<%# Eval("Role.RoleId" ) %>' />
+
+                <div>Select visible permissions for <%# Eval("Role.RoleName" ) %></div>
                 <asp:CheckBoxList ID="cbAllowedRoles" runat="server"></asp:CheckBoxList>
+                <asp:LinkButton ID="LinkButton1" runat="server" CommandName="Update" Text="Update" CssClass="dnnPrimaryAction" />
+                <asp:LinkButton ID="btnCancelRole" runat="server" CommandName="Cancel" Text="Cancel" CssClass="dnnSecondaryAction" />
+                <hr />
             </EditItemTemplate>
+
+            <InsertItemTemplate>
+                <div>
+                    <asp:DropDownList ID="ddNewRole" AppendDataBoundItems="false" runat="server"></asp:DropDownList>
+                    <asp:LinkButton ID="btnAddNewRole" runat="server" CommandName="Insert" Text="Add Role" CssClass="dnnSecondaryAction" />
+                    <div id="addNewRoleErrors" runat="server" visible="false"></div>
+                </div>
+            </InsertItemTemplate>
         </asp:ListView>
+        <hr />
 
     </div>
-    <%--<div class="dnnFormItem">
-		<dnn:label id="plReplaceTokens" controlname="chkReplaceTokens" runat="server" />
-		<asp:CheckBox ID="chkReplaceTokens" runat="server" />
-	</div>
-	<div class="dnnFormItem">
-		<dnn:label id="plDecorate" controlname="cbDecorate" runat="server" />
-		<asp:CheckBox ID="cbDecorate" runat="server" />
-	</div>
-	<div class="dnnFormItem">
-        <dnn:label id="plSearchDescLength" runat="server" controlname="txtSearchDescLength" />
-        <asp:TextBox ID="txtSearchDescLength" runat="server" />
-        <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ControlToValidate="txtSearchDescLength"
-            Display="Dynamic" CssClass="dnnFormMessage dnnFormError" ValidationExpression="^\d+$" resourcekey="valSearchDescLength.ErrorMessage" />
-    </div>
-	<div class="dnnFormItem">
-		<dnn:label id="plWorkflow" controlname="cboWorkflow" runat="server" suffix=":" />		
-        <dnn:DnnComboBox ID="cboWorkflow" runat="server" DataTextField="WorkflowName" DataValueField="WorkflowID" AutoPostBack="True" />
-	</div>
-	<div class="dnnFormMessage dnnFormInfo">
-		<asp:Label ID="lblDescription" runat="server" />
-	</div>
-	<div class="dnnFormItem" id="divApplyTo" runat="server">
-		<dnn:label id="plApplyTo" controlname="rblApplyTo" runat="server" />
-		<asp:RadioButtonList ID="rblApplyTo" runat="server" RepeatDirection="Horizontal" CssClass="dnnFormRadioButtons">
-			<asp:ListItem Value="Module" ResourceKey="Module" />
-			<asp:ListItem Value="Page" ResourceKey="Page" />
-			<asp:ListItem Value="Site" ResourceKey="Site" />
-		</asp:RadioButtonList>
-		<asp:CheckBox ID="chkReplace" runat="server" resourcekey="chkReplace" CssClass="inline" />
-	</div>--%>
 </div>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#btn-add-role-permission').click(function () {
-
-        });
-    });
-</script>

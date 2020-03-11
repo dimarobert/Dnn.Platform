@@ -1,3 +1,7 @@
 ﻿.btn-delete-role {
     margin-left: 10px;
 }
+
+.role-list {
+    list-style: none;
+}
