@@ -39,6 +39,16 @@
                     <helpUrl>https://dnndocs.com</helpUrl>
                     <viewOrder>0</viewOrder>
                   </moduleControl>
+                  <moduleControl>
+                    <controlKey>Settings</controlKey>
+                    <controlSrc>DesktopModules/CoreMessaging/Settings.ascx</controlSrc>
+                    <supportsPartialRendering>True</supportsPartialRendering>
+                    <controlTitle>Settings</controlTitle>
+                    <controlType>Edit</controlType>
+                    <iconFile />
+                    <helpUrl>http://www.dnnsoftware.com/help</helpUrl>
+                    <viewOrder>0</viewOrder>
+                  </moduleControl>
                 </moduleControls>
               </moduleDefinition>
             </moduleDefinitions>
@@ -67,6 +77,10 @@
             <file>
               <name>View.ascx</name>
               <sourceFileName>View.ascx</sourceFileName>
+            </file>
+            <file>
+              <name>Settings.ascx</name>
+              <sourceFileName>Settings.ascx</sourceFileName>
             </file>
           </files>
         </component>

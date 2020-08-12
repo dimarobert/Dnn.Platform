@@ -1023,7 +1023,43 @@
 
         var viewModel = new coreMessagingViewModel();
         ko.applyBindings(viewModel, document.getElementById($(element).attr("id")));
+
+        var internalMessagingServiceUrl = serviceFramework.getServiceRoot('InternalServices') + 'MessagingService/Search';
+        var _tokenInput = $.fn.tokenInput;
+        $.fn.tokenInput = function (method) {
+            if (method !== internalMessagingServiceUrl)
+                return _tokenInput(method);
+
+            var parentDialog = this.parents('.composeMessageDialog');
+            if (!parentDialog.length)
+                return _tokenInput(method);
+
+            var dialogOptions = $.data(parentDialog[0], 'uiDialog');
+            if (!dialogOptions)
+                return _tokenInput(method);
+
+            var options = dialogOptions.options;
+
+            if (!options)
+                return _tokenInput(method);
+
+            if (options.openTriggerScope !== composeMessageOptions.openTriggerScope)
+                return _tokenInput(method);
+
+            // Call the original function with the changed url.
+            var args = [baseServicepath + 'Search'];
+            args = args.concat(Array.prototype.slice.call(arguments, 1));
+            args[1].supportModules = serviceFramework.setModuleHeaders;
+            return _tokenInput.apply(this, args);
+        };
+
         $(element).dnnComposeMessage(composeMessageOptions);
+
+        // Fix message body having an initial value of "</div></fieldset>".
+        $(composeMessageOptions.openTriggerScope).delegate(composeMessageOptions.openTriggerSelector, 'click', function () {
+            var bodyTextarea = $(".composeMessageDialog #bodytext");
+            bodyTextarea.length && bodyTextarea.text("");
+        });
 
         var stateview = getQuerystring('view');
         //cover case where advanced rewriter used
