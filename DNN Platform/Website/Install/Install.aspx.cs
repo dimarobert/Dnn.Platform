@@ -352,34 +352,35 @@ namespace DotNetNuke.Services.Install
 
         private void UpgradeApplication()
         {
+            if (Upgrade.Upgrade.RemoveInvalidAntiForgeryCookie())
+            {
+                this.Response.Redirect(this.Request.RawUrl, true);
+                return;
+            }
+
+            var databaseVersion = DataProvider.Instance().GetVersion();
+
+            // Start Timer
+            Upgrade.Upgrade.StartTimer();
+
+            // Write out Header
+            HtmlUtils.WriteHeader(this.Response, "upgrade");
+
+            // There could be an installation in progress
+            lock (InstallLocker)
+            {
+                if (InstallBlocker.Instance.IsInstallInProgress())
+                {
+                    this.WriteInstallationHeader();
+                    this.WriteInstallationInProgress();
+                    return;
+                }
+
+                RegisterInstallBegining();
+            }
+
             try
             {
-                if (Upgrade.Upgrade.RemoveInvalidAntiForgeryCookie())
-                {
-                    this.Response.Redirect(this.Request.RawUrl, true);
-                }
-
-                var databaseVersion = DataProvider.Instance().GetVersion();
-
-                // Start Timer
-                Upgrade.Upgrade.StartTimer();
-
-                // Write out Header
-                HtmlUtils.WriteHeader(this.Response, "upgrade");
-
-                // There could be an installation in progress
-                lock (InstallLocker)
-                {
-                    if (InstallBlocker.Instance.IsInstallInProgress())
-                    {
-                        this.WriteInstallationHeader();
-                        this.WriteInstallationInProgress();
-                        return;
-                    }
-
-                    RegisterInstallBegining();
-                }
-
                 this.Response.Write("<h2>Current Assembly Version: " + Globals.FormatVersion(DotNetNukeContext.Current.Application.Version) + "</h2>");
                 this.Response.Flush();
 
