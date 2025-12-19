@@ -211,7 +211,7 @@ namespace DotNetNuke.Services.Install
                 if (string.IsNullOrEmpty(strError))
                 {
                     // send a new request to the application to initiate step 2
-                    this.Response.Redirect(HttpContext.Current.Request.RawUrl, true);
+                    this.Response.Redirect(this.Request.RawUrl, true);
                 }
                 else
                 {
@@ -224,44 +224,44 @@ namespace DotNetNuke.Services.Install
             }
             else
             {
-                try
+                var synchConnectionString = new SynchConnectionStringStep();
+                synchConnectionString.Execute();
+                if (synchConnectionString.Status == StepStatus.AppRestart)
                 {
-                    var synchConnectionString = new SynchConnectionStringStep();
-                    synchConnectionString.Execute();
-                    if (synchConnectionString.Status == StepStatus.AppRestart)
+                    // send a new request to the application to initiate step 2
+                    this.Response.Redirect(this.Request.RawUrl, true);
+                }
+
+                // Start Timer
+                Upgrade.Upgrade.StartTimer();
+
+                // Write out Header
+                HtmlUtils.WriteHeader(this.Response, "install");
+
+                // get path to script files
+                string strProviderPath = DataProvider.Instance().GetProviderPath();
+                if (!strProviderPath.StartsWith("ERROR:"))
+                {
+                    if (!this.CheckPermissions())
                     {
-                        // send a new request to the application to initiate step 2
-                        this.Response.Redirect(HttpContext.Current.Request.RawUrl, true);
+                        return;
                     }
 
-                    // Start Timer
-                    Upgrade.Upgrade.StartTimer();
-
-                    // Write out Header
-                    HtmlUtils.WriteHeader(this.Response, "install");
-
-                    // get path to script files
-                    string strProviderPath = DataProvider.Instance().GetProviderPath();
-                    if (!strProviderPath.StartsWith("ERROR:"))
+                    // Add the install blocker logic
+                    lock (InstallLocker)
                     {
-                        if (!this.CheckPermissions())
+                        if (InstallBlocker.Instance.IsInstallInProgress())
                         {
+                            this.WriteInstallationHeader();
+                            this.WriteInstallationInProgress();
                             return;
                         }
 
-                        // Add the install blocker logic
-                        lock (InstallLocker)
-                        {
-                            if (InstallBlocker.Instance.IsInstallInProgress())
-                            {
-                                this.WriteInstallationHeader();
-                                this.WriteInstallationInProgress();
-                                return;
-                            }
+                        RegisterInstallBegining();
+                    }
 
-                            RegisterInstallBegining();
-                        }
-
+                    try
+                    {
                         var installConfig = InstallController.Instance.GetInstallConfig();
 
                         // Create Folder Mappings config
@@ -302,20 +302,20 @@ namespace DotNetNuke.Services.Install
                         // Start Scheduler
                         Initialize.StartScheduler(true);
                     }
-                    else
+                    finally
                     {
-                        // upgrade error
-                        this.Response.Write("<h2>Upgrade Error: " + strProviderPath + "</h2>");
-                        this.Response.Flush();
+                        RegisterInstallEnd();
                     }
-
-                    // Write out Footer
-                    HtmlUtils.WriteFooter(this.Response);
                 }
-                finally
+                else
                 {
-                    RegisterInstallEnd();
+                    // upgrade error
+                    this.Response.Write("<h2>Upgrade Error: " + strProviderPath + "</h2>");
+                    this.Response.Flush();
                 }
+
+                // Write out Footer
+                HtmlUtils.WriteFooter(this.Response);
             }
         }
 
