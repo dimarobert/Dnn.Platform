@@ -167,7 +167,6 @@ namespace DotNetNuke.Web.Mvc.Framework.Modules
             {
                 // Check if the controller supports IDnnController
                 var moduleController = controller as IDnnController;
-                moduleController.IsAsync = true;
 
                 // If we couldn't adapt it, we fail.  We can't support IController implementations directly :(
                 // Because we need to retrieve the ActionResult without executing it, IController won't cut it
@@ -175,6 +174,8 @@ namespace DotNetNuke.Web.Mvc.Framework.Modules
                 {
                     throw new InvalidOperationException("Could Not Construct Controller");
                 }
+
+                moduleController.IsAsync = true;
 
                 moduleController.ValidateRequest = false;
 
