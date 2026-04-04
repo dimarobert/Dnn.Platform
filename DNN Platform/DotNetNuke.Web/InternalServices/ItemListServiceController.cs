@@ -485,7 +485,7 @@ namespace DotNetNuke.Web.InternalServices
             }
             catch (Exception exc)
             {
-                Logger.Error(exc);
+                Logger.ItemListServiceControllerSearchUserException(exc);
                 return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
             }
         }

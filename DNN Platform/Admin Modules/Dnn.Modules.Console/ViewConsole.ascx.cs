@@ -486,7 +486,7 @@ namespace Dnn.Modules.Console
                 }
                 catch (Exception exc)
                 {
-                    Logger.Error(exc);
+                    Logger.ViewConsoleParseConsoleModuleIdException(exc);
 
                     consoleModuleID = -1;
                 }

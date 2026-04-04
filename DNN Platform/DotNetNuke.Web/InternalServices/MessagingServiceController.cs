@@ -67,7 +67,7 @@ namespace DotNetNuke.Web.InternalServices
             }
             catch (Exception exc)
             {
-                Logger.Error(exc);
+                Logger.MessagingServiceControllerWaitTimeForNextMessageException(exc);
                 return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
             }
         }
@@ -106,7 +106,7 @@ namespace DotNetNuke.Web.InternalServices
             }
             catch (Exception exc)
             {
-                Logger.Error(exc);
+                Logger.MessagingServiceControllerCreateException(exc);
                 return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
             }
         }
@@ -157,7 +157,7 @@ namespace DotNetNuke.Web.InternalServices
             }
             catch (Exception exc)
             {
-                Logger.Error(exc);
+                Logger.MessagingServiceControllerSearchException(exc);
                 return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
             }
         }

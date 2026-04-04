@@ -508,7 +508,7 @@ namespace DotNetNuke.Common
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                Logger.GlobalsRedirectException(ex);
             }
         }
 
@@ -1205,7 +1205,7 @@ namespace DotNetNuke.Common
                 }
                 catch (Exception exc)
                 {
-                    Logger.Error(exc);
+                    Logger.GlobalsGetTotalRecordsException(exc);
                     total = -1;
                 }
             }
@@ -2914,7 +2914,7 @@ namespace DotNetNuke.Common
             }
             catch (Exception exc)
             {
-                Logger.Error(exc);
+                Logger.GlobalsDateToStringException(exc);
 
                 return Null.NullString;
             }
@@ -3260,7 +3260,7 @@ namespace DotNetNuke.Common
         /// <summary>DeserializeHashTableBase64 deserializes a Hashtable using Binary Formatting.</summary>
         /// <remarks>
         /// While this method of serializing is no longer supported (due to Medium Trust
-        /// issue, it is still required for upgrade purposes.
+        /// issue), it is still required for upgrade purposes.
         /// </remarks>
         /// <param name="source">The String Source to deserialize.</param>
         /// <returns>The deserialized Hashtable.</returns>
@@ -3280,7 +3280,7 @@ namespace DotNetNuke.Common
                     }
                     catch (Exception exc)
                     {
-                        Logger.Error(exc);
+                        Logger.GlobalsDeserializeHashTableBase64Exception(exc);
 
                         objHashTable = new Hashtable();
                     }
@@ -3296,7 +3296,7 @@ namespace DotNetNuke.Common
             return objHashTable;
         }
 
-        /// <summary>DeserializeHashTableXml deserializes a Hashtable using Xml Serialization.</summary>
+        /// <summary>DeserializeHashTableXml deserializes a Hashtable using XML Serialization.</summary>
         /// <remarks>
         /// This is the preferred method of serialization under Medium Trust.
         /// </remarks>
@@ -3311,7 +3311,7 @@ namespace DotNetNuke.Common
         /// <summary>SerializeHashTableBase64 serializes a Hashtable using Binary Formatting.</summary>
         /// <remarks>
         /// While this method of serializing is no longer supported (due to Medium Trust
-        /// issue, it is still required for upgrade purposes.
+        /// issue), it is still required for upgrade purposes.
         /// </remarks>
         /// <param name="source">The Hashtable to serialize.</param>
         /// <returns>The serialized String.</returns>
@@ -3330,7 +3330,7 @@ namespace DotNetNuke.Common
                 }
                 catch (Exception exc)
                 {
-                    Logger.Error(exc);
+                    Logger.GlobalsSerializeHashTableBase64Exception(exc);
 
                     strString = string.Empty;
                 }
@@ -3347,7 +3347,7 @@ namespace DotNetNuke.Common
             return strString;
         }
 
-        /// <summary>SerializeHashTableXml serializes a Hashtable using Xml Serialization.</summary>
+        /// <summary>SerializeHashTableXml serializes a Hashtable using XML Serialization.</summary>
         /// <remarks>
         /// This is the preferred method of serialization under Medium Trust.
         /// </remarks>
@@ -3496,7 +3496,7 @@ namespace DotNetNuke.Common
                 arrFileList.Add(new FileItem(string.Empty, "<" + Localization.GetString("None_Specified") + ">"));
             }
 
-            string file = null;
+            string file;
             string[] files = Directory.GetFiles(currentDirectory.FullName);
             foreach (string fileLoopVariable in files)
             {

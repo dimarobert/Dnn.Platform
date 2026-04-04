@@ -435,7 +435,7 @@ namespace Dnn.PersonaBar.Themes.Components
                         catch (Exception ex)
                         {
                             // problem creating thumbnail
-                            Logger.Error(ex);
+                            Logger.ComponentsThemesControllerCreateThumbnailException(ex);
                         }
                     }
                 }
@@ -664,7 +664,7 @@ namespace Dnn.PersonaBar.Themes.Components
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error(ex);
+                    Logger.ComponentsThemesControllerUpdateManifestException(ex);
                 }
             }
         }

@@ -32,6 +32,7 @@ namespace DotNetNuke.Modules.Admin.Modules
     using DotNetNuke.UI.Modules;
     using DotNetNuke.UI.Skins;
     using DotNetNuke.UI.Skins.Controls;
+    using DotNetNuke.Website;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
 
@@ -516,7 +517,7 @@ namespace DotNetNuke.Modules.Admin.Modules
                         }
                         catch (ThreadAbortException exc)
                         {
-                            Logger.Debug(exc);
+                            Logger.ModuleSettingsThreadAbortException(exc);
 
                             Thread.ResetAbort(); // necessary
                         }

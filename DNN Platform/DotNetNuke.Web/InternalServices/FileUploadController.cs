@@ -509,7 +509,7 @@ namespace DotNetNuke.Web.InternalServices
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                Logger.FileUploadControllerSaveFileException(ex);
                 errorMessage = ex.Message;
                 return savedFileDto;
             }
@@ -658,7 +658,7 @@ namespace DotNetNuke.Web.InternalServices
                         }
                         catch (ArgumentException exc)
                         {
-                            Logger.Warn("Unable to get image dimensions for image file", exc);
+                            Logger.FileUploadControllerUnableToGetImageDimensions(exc);
                             size = new Size(32, 32);
                         }
                     }
@@ -687,7 +687,7 @@ namespace DotNetNuke.Web.InternalServices
             }
             catch (Exception exe)
             {
-                Logger.Error(exe);
+                Logger.FileUploadControllerUploadFileException(exe);
                 result.Message = exe.Message;
                 return result;
             }

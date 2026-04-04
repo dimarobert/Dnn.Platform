@@ -634,9 +634,8 @@ namespace Dnn.PersonaBar.Pages.Services
             }
             catch (Exception ex)
             {
-                var errorMessage = "An unexpected error occurred while trying to make this page neutral, please consult the logs for more details.";
-                Logger.Error(errorMessage, ex);
-                return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, errorMessage);
+                Logger.PagesControllerUnexpectedErrorMakingPageNeutral(ex);
+                return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "An unexpected error occurred while trying to make this page neutral, please consult the logs for more details.");
             }
         }
 
@@ -670,9 +669,8 @@ namespace Dnn.PersonaBar.Pages.Services
             }
             catch (Exception ex)
             {
-                var errorMessage = "An unexpected error occurred while trying to make this page translatable.";
-                Logger.Error(errorMessage, ex);
-                return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, errorMessage);
+                Logger.PagesControllerUnexpectedErrorMakingPageTranslatable(ex);
+                return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "An unexpected error occurred while trying to make this page translatable.");
             }
         }
 
@@ -698,9 +696,8 @@ namespace Dnn.PersonaBar.Pages.Services
             }
             catch (Exception ex)
             {
-                var errorMessage = "An unexpected error occurred while trying to add missing languages to this page, consult the logs for more details.";
-                Logger.Error(errorMessage, ex);
-                return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, errorMessage);
+                Logger.PagesControllerUnexpectedErrorAddingMissingLanguagesToPage(ex);
+                return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "An unexpected error occurred while trying to add missing languages to this page, consult the logs for more details.");
             }
         }
 
@@ -741,9 +738,8 @@ namespace Dnn.PersonaBar.Pages.Services
             }
             catch (Exception ex)
             {
-                var errorMessage = "An unexpected error occurred while trying to notify the translators, please consult the logs for more details.";
-                Logger.Error(errorMessage, ex);
-                return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, errorMessage);
+                Logger.PagesControllerUnexpectedErrorNotifyingTranslators(ex);
+                return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "An unexpected error occurred while trying to notify the translators, please consult the logs for more details.");
             }
         }
 
@@ -776,9 +772,8 @@ namespace Dnn.PersonaBar.Pages.Services
             }
             catch (Exception ex)
             {
-                var errorMessage = "An unexpected error occurrfed trying to get this page localization, consult the logs for more details.";
-                Logger.Error(errorMessage, ex);
-                return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, errorMessage);
+                Logger.PagesControllerUnexpectedErrorGettingPageLocalization(ex);
+                return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "An unexpected error occurred trying to get this page localization, consult the logs for more details.");
             }
         }
 
@@ -803,9 +798,8 @@ namespace Dnn.PersonaBar.Pages.Services
             }
             catch (Exception ex)
             {
-                var errorMessage = "An unexpected error occurred trying to update the page localization, please consult the logs for more details.";
-                Logger.Error(errorMessage, ex);
-                return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, errorMessage);
+                Logger.PagesControllerUnexpectedErrorUpdatingPageLocalization(ex);
+                return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "An unexpected error occurred trying to update the page localization, please consult the logs for more details.");
             }
         }
 
@@ -838,9 +832,8 @@ namespace Dnn.PersonaBar.Pages.Services
             }
             catch (Exception ex)
             {
-                var errorMessage = "An unexpected error occurred while trying to restore the module onto that page.";
-                Logger.Error(errorMessage, ex);
-                return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, errorMessage);
+                Logger.PagesControllerUnexpectedErrorRestoringModuleOntoPage(ex);
+                return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "An unexpected error occurred while trying to restore the module onto that page.");
             }
         }
 
@@ -873,9 +866,8 @@ namespace Dnn.PersonaBar.Pages.Services
             }
             catch (Exception ex)
             {
-                var errorMessage = "An unexpected error occurred while trying to delete the module, consult the logs for more details.";
-                Logger.Error(errorMessage, ex);
-                return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, errorMessage);
+                Logger.PagesControllerUnexpectedErrorDeletingModule(ex);
+                return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "An unexpected error occurred while trying to delete the module, consult the logs for more details.");
             }
         }
 
@@ -896,9 +888,8 @@ namespace Dnn.PersonaBar.Pages.Services
             }
             catch (Exception ex)
             {
-                var errorMessage = "An unexpected error occurred while trying to find if content localization is enabled";
-                Logger.Error(errorMessage, ex);
-                return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, errorMessage);
+                Logger.PagesControllerUnexpectedErrorGettingContentLocalizationEnabled(ex);
+                return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "An unexpected error occurred while trying to find if content localization is enabled");
             }
         }
 
@@ -921,9 +912,8 @@ namespace Dnn.PersonaBar.Pages.Services
             }
             catch (Exception ex)
             {
-                var errorMessage = "An unexpected error occurred trying to get the cached items count, please consult the logs for more details.";
-                Logger.Error(errorMessage, ex);
-                return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, errorMessage);
+                Logger.PagesControllerUnexpectedErrorGettingCachedItemsCount(ex);
+                return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "An unexpected error occurred trying to get the cached items count, please consult the logs for more details.");
             }
         }
 
@@ -949,9 +939,8 @@ namespace Dnn.PersonaBar.Pages.Services
             }
             catch (Exception ex)
             {
-                var message = "An unexpected error occurred while trying to clear the cache for this page, see logs for more details.";
-                Logger.Error(message, ex);
-                return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, message);
+                Logger.PagesControllerUnexpectedErrorClearingCacheForPage(ex);
+                return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "An unexpected error occurred while trying to clear the cache for this page, see logs for more details.");
             }
         }
 

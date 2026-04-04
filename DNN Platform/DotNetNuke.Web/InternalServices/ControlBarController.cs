@@ -266,7 +266,7 @@ namespace DotNetNuke.Web.InternalServices
                 }
                 catch (Exception exc)
                 {
-                    Logger.Error(exc);
+                    Logger.ControlBarControllerParseVisibilityException(exc);
                     permissionType = 0;
                 }
 
@@ -283,7 +283,7 @@ namespace DotNetNuke.Web.InternalServices
                     }
                     catch (Exception exc)
                     {
-                        Logger.Error(exc);
+                        Logger.ControlBarControllerParseSortException(exc);
                     }
                 }
 
@@ -309,7 +309,7 @@ namespace DotNetNuke.Web.InternalServices
                 }
                 catch (Exception exc)
                 {
-                    Logger.Error(exc);
+                    Logger.ControlBarControllerParseModuleIdException(exc);
                     moduleLstId = -1;
                 }
 
@@ -327,7 +327,7 @@ namespace DotNetNuke.Web.InternalServices
                             }
                             catch (Exception exc)
                             {
-                                Logger.Error(exc);
+                                Logger.ControlBarControllerParsePageIdException(exc);
                                 pageId = -1;
                             }
 
@@ -346,7 +346,7 @@ namespace DotNetNuke.Web.InternalServices
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error(ex);
+                    Logger.ControlBarControllerAddModuleException(ex);
                 }
             }
 

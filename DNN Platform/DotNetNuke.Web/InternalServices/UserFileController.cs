@@ -71,7 +71,7 @@ namespace DotNetNuke.Web.InternalServices
             }
             catch (Exception exc)
             {
-                Logger.Error(exc);
+                Logger.UserFileControllerGetItemsException(exc);
                 return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
             }
         }

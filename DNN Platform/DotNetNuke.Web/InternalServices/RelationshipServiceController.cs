@@ -67,7 +67,7 @@ namespace DotNetNuke.Web.InternalServices
             }
             catch (Exception exc)
             {
-                Logger.Error(exc);
+                Logger.RelationshipServiceControllerAcceptFriendException(exc);
             }
 
             if (success)
@@ -117,7 +117,7 @@ namespace DotNetNuke.Web.InternalServices
             }
             catch (UserRelationshipExistsException exc)
             {
-                Logger.Error(exc);
+                Logger.RelationshipServiceControllerFollowBackUserRelationshipExistsException(exc);
                 var response = new
                 {
                     Message = Localization.GetExceptionMessage(
@@ -128,7 +128,7 @@ namespace DotNetNuke.Web.InternalServices
             }
             catch (Exception exc)
             {
-                Logger.Error(exc);
+                Logger.RelationshipServiceControllerFollowBackGeneralException(exc);
                 return this.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc.Message);
             }
 
