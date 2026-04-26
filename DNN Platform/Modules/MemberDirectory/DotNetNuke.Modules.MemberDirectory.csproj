@@ -99,7 +99,6 @@
     <Compile Include="ViewModels\MemberDirectorySettingsModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
@@ -110,7 +109,6 @@
       <SubType>Designer</SubType>
     </None>
     <Content Include="Module.build" />
-    <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ie-member-directory.css" />

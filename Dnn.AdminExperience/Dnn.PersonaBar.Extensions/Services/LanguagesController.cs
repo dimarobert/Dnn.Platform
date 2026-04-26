@@ -16,6 +16,8 @@ namespace Dnn.PersonaBar.SiteSettings.Services
     using System.Web.Http;
     using System.Web.UI;
     using System.Xml;
+    using System.Xml.XPath;
+    using System.Xml.Xsl;
 
     using Dnn.PersonaBar.Library;
     using Dnn.PersonaBar.Library.Attributes;
@@ -326,10 +328,9 @@ namespace Dnn.PersonaBar.SiteSettings.Services
                     return this.Request.CreateErrorResponse(HttpStatusCode.Unauthorized, AuthFailureMessage);
                 }
 
-                LanguageResourceMode resourceMode;
-                Enum.TryParse(request.Mode, false, out resourceMode);
+                Enum.TryParse(request.Mode, false, out LanguageResourceMode resourceMode);
 
-                if (!this.UserInfo.IsSuperUser && (resourceMode == LanguageResourceMode.Host || resourceMode == LanguageResourceMode.System))
+                if (!this.UserInfo.IsSuperUser && resourceMode is LanguageResourceMode.Host or LanguageResourceMode.System)
                 {
                     return this.Request.CreateErrorResponse(HttpStatusCode.Unauthorized, AuthFailureMessage);
                 }
@@ -743,12 +744,21 @@ namespace Dnn.PersonaBar.SiteSettings.Services
             }
         }
 
-        private static string GetResourceKeyXPath(string resourceKeyName)
+        private static XPathExpression GetResourceKeyXPath(string resourceKeyName)
         {
-            return "//root/data[@name=" + XmlUtils.XPathLiteral(resourceKeyName) + "]";
+            return XmlUtils.CreateXPathExpression(
+                "//root/data[@name=$resourceKeyName]",
+                new KeyValuePair<string, object>("resourceKeyName", resourceKeyName));
         }
 
-        private static XmlNode AddResourceKey(XmlDocument resourceDoc, string resourceKey)
+        private static XPathExpression GetResourceKeyValueXPath(string resourceKeyName)
+        {
+            return XmlUtils.CreateXPathExpression(
+                "//root/data[@name=$resourceKeyName]/value",
+                new KeyValuePair<string, object>("resourceKeyName", resourceKeyName));
+        }
+
+        private static XPathNavigator AddResourceKey(XmlDocument resourceDoc, string resourceKey)
         {
             // missing entry
             var nodeData = resourceDoc.CreateElement("data");
@@ -757,7 +767,7 @@ namespace Dnn.PersonaBar.SiteSettings.Services
             nodeData.Attributes?.Append(attr);
             var selectSingleNode = resourceDoc.SelectSingleNode("//root");
             selectSingleNode?.AppendChild(nodeData);
-            return nodeData.AppendChild(resourceDoc.CreateElement("value"));
+            return nodeData.AppendChild(resourceDoc.CreateElement("value")).CreateNavigator();
         }
 
         private static bool IsDefaultLanguage(int portalId, string cultureCode)
@@ -872,7 +882,7 @@ namespace Dnn.PersonaBar.SiteSettings.Services
                 var resourceKey = entry.Name;
                 var txtValue = entry.NewValue;
 
-                var node = resDoc.SelectSingleNode(GetResourceKeyXPath(resourceKey) + "/value");
+                var node = resDoc.CreateNavigator()?.SelectSingleNode(GetResourceKeyValueXPath(resourceKey));
                 switch (mode)
                 {
                     case LanguageResourceMode.System:
@@ -882,7 +892,7 @@ namespace Dnn.PersonaBar.SiteSettings.Services
                             node = AddResourceKey(resDoc, resourceKey);
                         }
 
-                        node.InnerText = txtValue;
+                        node.SetValue(txtValue);
                         if (txtValue != entry.DefaultValue)
                         {
                             changedResources.Add(resourceKey, txtValue);
@@ -899,16 +909,15 @@ namespace Dnn.PersonaBar.SiteSettings.Services
                                 node = AddResourceKey(resDoc, resourceKey);
                             }
 
-                            node.InnerText = txtValue;
+                            node.SetValue(txtValue);
                             changedResources.Add(resourceKey, txtValue);
                         }
                         else
                         {
                             // remove item = default
-                            var parent = node?.ParentNode;
-                            if (parent != null)
+                            if (node?.MoveToParent() == true)
                             {
-                                resDoc.SelectSingleNode("//root")?.RemoveChild(parent);
+                                node.DeleteSelf();
                             }
                         }
 
@@ -923,7 +932,7 @@ namespace Dnn.PersonaBar.SiteSettings.Services
                 foreach (XmlNode node in nodeLoopVariables)
                 {
                     if (node.Attributes != null &&
-                        defDoc.SelectSingleNode(GetResourceKeyXPath(node.Attributes["name"].Value)) == null)
+                        defDoc.CreateNavigator()?.SelectSingleNode(GetResourceKeyXPath(node.Attributes["name"].Value)) == null)
                     {
                         node.ParentNode?.RemoveChild(node);
                     }
@@ -938,8 +947,8 @@ namespace Dnn.PersonaBar.SiteSettings.Services
                 {
                     if (node.Attributes != null)
                     {
-                        var xmlNodeList = resDoc.SelectNodes(GetResourceKeyXPath(node.Attributes["name"].Value));
-                        if (xmlNodeList != null && xmlNodeList.Count > 1)
+                        var xmlNodeList = resDoc.CreateNavigator()?.Select(GetResourceKeyXPath(node.Attributes["name"].Value));
+                        if (xmlNodeList is { Count: > 1, })
                         {
                             node.ParentNode?.RemoveChild(node);
                         }
@@ -955,7 +964,7 @@ namespace Dnn.PersonaBar.SiteSettings.Services
                 case LanguageResourceMode.Host:
                 case LanguageResourceMode.Portal:
                     var xmlNodeList = resDoc.SelectNodes("//root/data");
-                    if (xmlNodeList != null && xmlNodeList.Count > 0)
+                    if (xmlNodeList is { Count: > 0, })
                     {
                         // there's something to save
                         resDoc.Save(filename);

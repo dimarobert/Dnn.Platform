@@ -21,7 +21,6 @@ namespace Dnn.PersonaBar.Themes.Services
     using DotNetNuke.Abstractions.Application;
     using DotNetNuke.Common;
     using DotNetNuke.Common.Utilities;
-    using DotNetNuke.Entities.Host;
     using DotNetNuke.Entities.Modules;
     using DotNetNuke.Entities.Portals;
     using DotNetNuke.Instrumentation;
@@ -215,6 +214,11 @@ namespace Dnn.PersonaBar.Themes.Services
         {
             try
             {
+                if (!SkinControlController.GetSkinControls().Values.Select(sc => sc.ControlSrc).ToHashSet(StringComparer.OrdinalIgnoreCase).Contains(token))
+                {
+                    return this.Request.CreateResponse(HttpStatusCode.BadRequest);
+                }
+
                 var strFile = this.appStatus.ApplicationMapPath + @"\" + token.ToLowerInvariant().Replace("/", @"\").Replace(".ascx", ".xml");
                 var settings = new List<ListItemInfo>();
                 if (File.Exists(strFile))
@@ -245,6 +249,11 @@ namespace Dnn.PersonaBar.Themes.Services
         {
             try
             {
+                if (!SkinControlController.GetSkinControls().Values.Select(sc => sc.ControlSrc).ToHashSet(StringComparer.OrdinalIgnoreCase).Contains(token))
+                {
+                    return this.Request.CreateResponse(HttpStatusCode.BadRequest);
+                }
+
                 var strFile = this.appStatus.ApplicationMapPath + @"\" + token.ToLowerInvariant().Replace("/", @"\").Replace(".ascx", ".xml");
                 var value = string.Empty;
                 if (File.Exists(strFile))
